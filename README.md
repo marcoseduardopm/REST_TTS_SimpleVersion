@@ -1,19 +1,18 @@
-# REST-TTS-Dockerfize
-TTS REST API wrapper with FastAPI and Docker, for your text-to-speech needs🤖
+# REST-TTS-SimpleVersion
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S613677)
+This repository is a Fork of the (https://github.com/rsandagon/REST_TTS_Dockerized), removing the Docker part in case you need to run without a docker. 
+This is a Toqui-ai TTS REST API wrapper with FastAPI.
+
 
 ## Installation
-1. To build image, run `docker build . --tag my/tts-api`
-1. To run image, run`docker run -d -p 7861:7861 -v ./audio:/code/audio -v ./tts:/root/.local/share/tts --name tts-api my/tts-api`
-*⚠️ Note: Make sure to have the `-v` volume parameter to avoid redownloading models.*
-1. For CPU only, use `ghcr.io/coqui-ai/tts-cpu`, for GPU use `ghcr.io/coqui-ai/tts` as Dockerfile base image.
-1. Go to `http://127.0.0.1:7861/api/` to check the app
+1. Install PyTorch using `pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`. For more information, please see https://pytorch.org/.
+1. Install other requirements using `pip3 install --no-cache-dir --upgrade -r requirements.txt`
+1. To start the service, use `python ./main.py`
+1. For more information about the available REST services, please see `http://127.0.0.1:8000/docs/`.
+
 
 ## USAGE
-1. To convert text to speech, use the `POST` endpoint `/api/tts/`
-with payload of `{message:"read this",name:"arnold"}`. `message` is the text to be read and `name` is the sampling voice to be cloned. this returns the filename of the audio
-1. To read back converted speech, use the `GET` endpoint `/api/voice/`
-with audio filename set a query params `name`  e.g. `.../api/voice?name=sample01.wav`
-1. All generated audio are saved in `audio/outputs` folder with the file name `<sample>_<timestamp>`.
-
+1. To convert text to speech, use the `POST` endpoint `/api/tts/` with payload of `{message:"Hello World!",name:"arnold"}`. `message` is the text to be read and `name` is the sampling voice to be cloned. The audio will be returned.
+1. More voices can be included adding files to 'audio/voices'.
+1. You can also test it through `http://127.0.0.1:8000/docs/`.
+1. All generated audio is saved in `audio/outputs` folder with the file name `<sample>_<timestamp>`.

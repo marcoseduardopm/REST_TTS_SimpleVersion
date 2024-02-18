@@ -7,20 +7,33 @@ import torch
 import re
 from TTS.api import TTS
 
+
+#print(TTS().list_models())
+
 # Get device
 device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Device: " + device)
 tts = TTS("xtts_v2.0.2").to(device)
+#tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2").to(device)
 
+# Run TTS
+# ❗ Since this model is multi-lingual voice cloning model, we must set the target speaker_wav and language
+# Text to speech list of amplitude values as output
+#wav = tts.tts(text="Hello world!", speaker_wav="my/cloning/audio.wav", language="en")
+# Text to speech to a file
+#tts.tts_to_file(text="Hello world!", speaker_wav="audio/voices/default.wav", language="en", file_path="output.wav")
+
+#Based on https://github.com/rsandagon/REST_TTS_Dockerized
 app = FastAPI(
-    title="REST_TTS_Dockerized",
-    description="TTS REST API wrapper with FastAPI and Docker, for your text-to-speech needs🤖",
-    summary="TTS REST API Dockerized",
+    title="Simple REST TTS",
+    description="Simple TTS REST API wrapper with FastAPI, based on https://github.com/rsandagon/REST_TTS_Dockerized",
+    summary="TTS REST API",
     version="0.0.1",
-    terms_of_service="https://github.com/rsandagon/REST_TTS_Dockerized/README.md",
+    #terms_of_service="https://github.com/rsandagon/REST_TTS_Dockerized/README.md",
     contact={
-        "name": "rsandagon",
-        "url": "https://github.com/rsandagon",
-        "email": "rsandagon.com",
+        "name": "marcoseduardopm",
+        "url": "https://github.com/marcoseduardopm",
+        "email": "marcoseduardopm@hotmail.com",
     },
     license_info={
         "name": "Apache 2.0",
@@ -56,5 +69,10 @@ async def post_tts(item: Item):
 
     tts.tts_to_file(text=remove_between_asterisks(item.message), speaker_wav="audio/voices/"+srcname, language="en", file_path="audio/outputs/"+outname)
     # or return FileResponse of the wav if machine is fast enough
-    # return FileResponse("audio/outputs/"+outname, media_type="audio/mpeg")
-    return {"file":outname}
+    return FileResponse("audio/outputs/"+outname, media_type="audio/mpeg")
+    #return {"file":outname}
+    
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8000)
